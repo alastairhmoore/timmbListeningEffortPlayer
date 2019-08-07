@@ -6,6 +6,8 @@ Properties {
     [Gamma] _Exposure ("Exposure", Range(0, 8)) = 1.0
     _Rotation ("Rotation", Range(0, 360)) = 0
     [NoScaleOffset] _MainTex ("Spherical  (HDR)", 2D) = "grey" {}
+    [NoScaleOffset] _MainTex1 ("_MainTex1", 2D) = "grey" {}
+    GreenScreenAmount1 ("_GreenScreenAmount1", Range(0, 1.73)) = 0.3
     [KeywordEnum(6 Frames Layout, Latitude Longitude Layout)] _Mapping("Mapping", Float) = 1
     [Enum(360 Degrees, 0, 180 Degrees, 1)] _ImageType("Image Type", Float) = 0
     [Toggle] _MirrorOnBack("Mirror on Back", Float) = 0
@@ -29,6 +31,10 @@ SubShader {
         sampler2D _MainTex;
         float4 _MainTex_TexelSize;
         half4 _MainTex_HDR;
+        sampler2D _MainTex1;
+        float4 _MainTex1_TexelSize;
+        half4 _MainTex1_HDR;
+        float _GreenScreenAmount1;
         half4 _Tint;
         half _Exposure;
         float _Rotation;
@@ -193,9 +199,22 @@ SubShader {
 #endif
 
             half4 tex = tex2D (_MainTex, tc);
+            half4 tex1 = tex2D (_MainTex1, tc);
             half3 c = DecodeHDR (tex, _MainTex_HDR);
+            half3 c1 = DecodeHDR (tex1, _MainTex1_HDR);
             c = c * _Tint.rgb * unity_ColorSpaceDouble.rgb;
+            c1 = c1 * _Tint.rgb * unity_ColorSpaceDouble.rgb;
             c *= _Exposure;
+            c1 *= _Exposure;
+            // c = 0.5 * (c + c1);
+            // Take euclidean distance from 0,1,0 for green chroma
+            half3 green = half3(0,1,0);
+            // This is on scale of 0 to sqrt(3)
+            float greenAmount0 = min(1.0, (sqrt(3) - distance(c, green)));
+            // float alpha1 = float(greenAmount0 > _GreenScreenAmount1);
+            c = lerp(c, c1, greenAmount0 > 0.91);
+            // c = half3(_GreenScreenAmount1, 0, 0);
+            // c = half3(greenAmount0, 0, 0);
             return half4(c, 1);
         }
         ENDCG
@@ -203,7 +222,7 @@ SubShader {
 }
 
 
-CustomEditor "SkyboxPanoramicShaderGUI"
+// CustomEditor "SkyboxPanoramicShaderGUI"
 Fallback Off
 
 }
