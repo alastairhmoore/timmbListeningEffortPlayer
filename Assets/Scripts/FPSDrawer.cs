@@ -28,9 +28,10 @@ public class FPSDrawer : MonoBehaviour
     void Update()
     {
         Text.text = "";
-        for (int i = 0; i < videoFPSCounters.Length; i++)
+        //for (int i = 0; i < videoFPSCounters.Length; i++)
+        foreach (var counter in videoFPSCounters)
         {
-            Text.text += $"video{i}: {videoFPSCounters[i].CurrentFPS:0.} fps\n";
+           Text.text += $"{counter.gameObject.name}: {counter.CurrentFPS:0.} fps\n";
         }
     }
 }
