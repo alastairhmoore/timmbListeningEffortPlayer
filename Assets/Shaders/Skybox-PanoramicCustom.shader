@@ -31,9 +31,19 @@ SubShader {
         sampler2D _MainTex;
         float4 _MainTex_TexelSize;
         half4 _MainTex_HDR;
+
         sampler2D _MainTex1;
         float4 _MainTex1_TexelSize;
         half4 _MainTex1_HDR;
+
+        sampler2D _MainTex2;
+        float4 _MainTex2_TexelSize;
+        half4 _MainTex2_HDR;
+
+        sampler2D _MainTex3;
+        float4 _MainTex3_TexelSize;
+        half4 _MainTex3_HDR;
+
         float _GreenScreenAmount1;
         half4 _Tint;
         half _Exposure;
@@ -200,8 +210,13 @@ SubShader {
 
             half4 tex = tex2D (_MainTex, tc);
             half4 tex1 = tex2D (_MainTex1, tc);
+            half4 tex2 = tex2D(_MainTex2, tc);
+            half4 tex3 = tex2D(_MainTex3, tc);
+            half4 texX = step(tc.x, 0.3)*tex1 + step(0.3, tc.x) * step(tc.x, 0.7) * tex2 + step(0.7, tc.x) * tex3;
             half3 c = DecodeHDR (tex, _MainTex_HDR);
-            half3 c1 = DecodeHDR (tex1, _MainTex1_HDR);
+            half3 c1 = DecodeHDR (texX, _MainTex1_HDR);
+            //half3 c1 = DecodeHDR (tex1, _MainTex1_HDR);
+            //half3 c1 = DecodeHDR (tex1, _MainTex1_HDR);
             c = c * _Tint.rgb * unity_ColorSpaceDouble.rgb;
             c1 = c1 * _Tint.rgb * unity_ColorSpaceDouble.rgb;
             c *= _Exposure;
@@ -212,7 +227,7 @@ SubShader {
             // This is on scale of 0 to sqrt(3)
             float greenAmount0 = min(1.0, (sqrt(3) - distance(c, green)));
             // float alpha1 = float(greenAmount0 > _GreenScreenAmount1);
-            c = lerp(c, c1, greenAmount0 > 0.91);
+            c = lerp(c, c1, greenAmount0 > 0.88);
             // c = half3(_GreenScreenAmount1, 0, 0);
             // c = half3(greenAmount0, 0, 0);
             return half4(c, 1);

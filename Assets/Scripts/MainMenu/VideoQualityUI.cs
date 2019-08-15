@@ -31,6 +31,7 @@ public class VideoQualityUI : MonoBehaviour
         Debug.Assert(toggleHD != null);
         Debug.Assert(toggle4K != null);
 
+        // Set current toggle values
         string key = videoName + "_quality";
         int defaultValue = toggle4K.isOn ? 1 : 0;
         // Save a 1 for 4K, 0 for HD
@@ -53,11 +54,16 @@ public class VideoQualityUI : MonoBehaviour
             }
         }
 
+        PlayerPrefs.SetInt(key, toggle4K.isOn ? 1 : 0);
+
+        // Callback
         toggle4K.onValueChanged.AddListener((bool is4K) => {
             int newPrefValue = is4K ? 1 : 0;
             //Debug.Log($"Saving preference for {key} as {newPrefValue}");
             PlayerPrefs.SetInt(key, newPrefValue);
         });
+
+        // Ensure preferences matches current value
     }
 
 }

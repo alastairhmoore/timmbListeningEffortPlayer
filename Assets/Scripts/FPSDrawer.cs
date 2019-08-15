@@ -20,6 +20,9 @@ public class FPSDrawer : MonoBehaviour
             videoFPSCounters[i] = videoPlayers[i].GetComponent<VideoFPSCounter>();
             Debug.Assert(videoFPSCounters[i] != null);
         }
+#pragma warning disable RECS0064 // Warns when a culture-aware 'string.CompareTo' call is used by default
+        System.Array.Sort(videoFPSCounters, (x, y) => x.name.CompareTo(y.name));
+#pragma warning restore RECS0064 // Warns when a culture-aware 'string.CompareTo' call is used by default
 
         Text = GetComponent<TMPro.TextMeshProUGUI>();
     }
@@ -31,7 +34,11 @@ public class FPSDrawer : MonoBehaviour
         //for (int i = 0; i < videoFPSCounters.Length; i++)
         foreach (var counter in videoFPSCounters)
         {
-           Text.text += $"{counter.gameObject.name}: {counter.CurrentFPS:0.} fps\n";
+            var player = counter.GetComponent<VideoPlayer>();
+            if (player.isPlaying)
+            {
+                Text.text += $"{player.clip.name}: {counter.CurrentFPS:0.} fps\n";
+            }
         }
     }
 }
