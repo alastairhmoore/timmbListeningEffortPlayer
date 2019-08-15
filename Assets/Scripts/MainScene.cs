@@ -1,7 +1,8 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR;
+using UnityEngine.SceneManagement;
 
 public class MainScene : MonoBehaviour
 {
@@ -21,6 +22,10 @@ public class MainScene : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
-    }
+		if (Input.GetButtonDown("Fire1"))
+		{
+			Debug.Log("Fire1 button: returning to main menu");
+			SceneManager.LoadSceneAsync("MainMenu");
+		}
+	}
 }
