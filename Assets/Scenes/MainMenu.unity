@@ -402,7 +402,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1537037085}
   toggleTransition: 1
   graphic: {fileID: 683686854}
-  m_Group: {fileID: 0}
+  m_Group: {fileID: 550365671}
   onValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -419,6 +419,7 @@ GameObject:
   m_Component:
   - component: {fileID: 550365670}
   - component: {fileID: 550365671}
+  - component: {fileID: 550365672}
   m_Layer: 5
   m_Name: video 0 quality
   m_TagString: Untagged
@@ -461,6 +462,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_AllowSwitchOff: 0
+--- !u!114 &550365672
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 550365669}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43185be17128c4b2796331d508d405a6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  videoName: video0
 --- !u!1 &641277502
 GameObject:
   m_ObjectHideFlags: 0
@@ -774,7 +788,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 782025547}
   toggleTransition: 1
   graphic: {fileID: 1003640199}
-  m_Group: {fileID: 0}
+  m_Group: {fileID: 550365671}
   onValueChanged:
     m_PersistentCalls:
       m_Calls: []

@@ -208,6 +208,7 @@ GameObject:
   - component: {fileID: 165716339}
   - component: {fileID: 165716338}
   - component: {fileID: 165716340}
+  - component: {fileID: 165716341}
   m_Layer: 0
   m_Name: Video0 Player
   m_TagString: Untagged
@@ -223,11 +224,11 @@ VideoPlayer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 165716337}
   m_Enabled: 1
-  m_VideoClip: {fileID: 32900000, guid: 226897d0cdbbd4f4ab7183676781703c, type: 3}
+  m_VideoClip: {fileID: 0}
   m_TargetCameraAlpha: 1
   m_TargetCamera3DLayout: 0
   m_TargetCamera: {fileID: 963194227}
-  m_TargetTexture: {fileID: 8400000, guid: 888f2134d13b148d9ab08afdecc8ba96, type: 2}
+  m_TargetTexture: {fileID: 0}
   m_TimeReference: 0
   m_TargetMaterialRenderer: {fileID: 0}
   m_TargetMaterialProperty: _MainTex
@@ -244,7 +245,7 @@ VideoPlayer:
   m_EnabledAudioTracks: 01
   m_DirectAudioMutes: 00
   m_ControlledAudioTrackCount: 1
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_SkipOnDrop: 1
   m_Looping: 1
   m_WaitForFirstFrame: 1
@@ -276,6 +277,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CurrentFPS: 0
+--- !u!114 &165716341
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 165716337}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 83c551a51d9274f61b361f58c3e7571c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  videoName: video0
+  VideoClipHD: {fileID: 32900000, guid: f07c8d489d1e5498997e0ecca41cb19c, type: 3}
+  VideoClip4K: {fileID: 32900000, guid: 226897d0cdbbd4f4ab7183676781703c, type: 3}
+  RenderTextureHD: {fileID: 8400000, guid: 3c70a351943484c1dadb6631d08edfed, type: 2}
+  RenderTexture4K: {fileID: 8400000, guid: 888f2134d13b148d9ab08afdecc8ba96, type: 2}
+  TargetMaterial: {fileID: 2100000, guid: 9cd35808171504acdb95ed7b6e230e25, type: 2}
+  TargetTextureNameInShader: _MainTex
 --- !u!1 &627966069
 GameObject:
   m_ObjectHideFlags: 0
@@ -449,7 +469,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &661666596
 RectTransform:
   m_ObjectHideFlags: 0
