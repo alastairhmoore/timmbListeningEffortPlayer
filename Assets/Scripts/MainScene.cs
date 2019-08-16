@@ -25,7 +25,7 @@ public class MainScene : MonoBehaviour
 		if (Input.GetButtonDown("Fire1"))
 		{
 			Debug.Log("Fire1 button: returning to main menu");
-			SceneManager.LoadSceneAsync("MainMenu");
+			SceneManager.LoadSceneAsync("MenuVideoSelection");
 		}
 	}
 }

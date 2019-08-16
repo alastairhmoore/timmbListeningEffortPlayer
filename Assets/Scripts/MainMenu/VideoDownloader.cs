@@ -15,8 +15,9 @@ public class VideoDownloader : MonoBehaviour
     //private VideoPlayer _player;
     private UnityWebRequest _mostRecentRequest;
     private bool _isDownloading;
-private bool _isAborting;
+    private bool _isAborting;
     private VideoPlayer _player;
+    private string _originalStatusText;
 
     public event EventHandler<bool> IsReadyChanged;
     /// <summary>
@@ -38,6 +39,7 @@ private bool _isAborting;
     {
         // player for testing videos
         _player = gameObject.AddComponent<VideoPlayer>();
+        _originalStatusText = StatusText.text;
 
         string PrefsKey = $"{VideoName}_url)";
         InputField inputField = GetComponentInChildren<InputField>();
@@ -46,8 +48,8 @@ private bool _isAborting;
         inputField.onEndEdit.AddListener((string url) =>
         {
             PlayerPrefs.SetString(PrefsKey, url);
+                StartCoroutine(downloadVideo(url));
 
-            StartCoroutine(downloadVideo(url));
         });
 
         if (PlayerPrefs.HasKey(PrefsKey))
@@ -76,6 +78,13 @@ private bool _isAborting;
         }
         _isAborting = false;
         IsReady = false;
+
+        if (String.IsNullOrWhiteSpace(url))
+        {
+            StatusText.text = _originalStatusText;
+            yield break;
+        }
+
 
         StatusText.text = "Connecting...";
         //var thisRequest = new UnityWebRequest(url);
@@ -115,24 +124,10 @@ private bool _isAborting;
                 int width = _player.texture.width;
                 int height = _player.texture.height;
                 Debug.Log($"{VideoName} downloaded and of size {width}x{height}.");
-
-                bool isHD = width == 1920 && height == 1080;
-                bool is4K = width == 4096 && height == 2048;
-                if (!(isHD || is4K))
-                {
-                    StatusText.text = $"Video size is {width}x{height}. Should be 1920x1080 or 4096x2048.";
+                StatusText.text = $"Video downloaded successfully. Size: {width}x{height}.";
+                IsReady = true;
                 // END OF THIS REQUEST
-                    _mostRecentRequest = null;
-
-                }
-                else
-                {
-                    StatusText.text = $"Video downloaded successfully. Size: {width}x{height}.";
-                    IsReady = true;
-                    // END OF THIS REQUEST
-                    _mostRecentRequest = null;
-                }
-                //}
+                _mostRecentRequest = null;
             };
 
             _player.errorReceived += (source, message) =>
