@@ -65,7 +65,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StatusText: {fileID: 6550732376929612881}
-  VideoName: video0
+  VideoName: 
 --- !u!1 &6550732376446020864
 GameObject:
   m_ObjectHideFlags: 0

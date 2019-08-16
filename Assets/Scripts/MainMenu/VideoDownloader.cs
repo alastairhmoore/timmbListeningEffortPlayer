@@ -7,7 +7,7 @@ using UnityEngine.Networking;
 using UnityEngine.UI;
 using UnityEngine.Video;
 
-public class VideoSelectionUI : MonoBehaviour
+public class VideoDownloader : MonoBehaviour
 {
     public Text StatusText;
     public string VideoName;
@@ -15,6 +15,7 @@ public class VideoSelectionUI : MonoBehaviour
     //private VideoPlayer _player;
     private UnityWebRequest _mostRecentRequest;
     private bool _isDownloading;
+private bool _isAborting;
     private VideoPlayer _player;
 
     public event EventHandler<bool> IsReadyChanged;
@@ -63,11 +64,17 @@ public class VideoSelectionUI : MonoBehaviour
 
         // To prevent overwriting of values, if there is already a request
         // in process we need to stop it first
-        while (_mostRecentRequest != null)
+        if (_mostRecentRequest != null)
         {
-            _mostRecentRequest.Abort();
-            StatusText.text = "Cancelling previous download...";
+            if (!_isAborting)
+            {
+                _mostRecentRequest.Abort();
+                StatusText.text = "Cancelling previous download...";
+                _isAborting = true;
+            }
+            yield return 0;
         }
+        _isAborting = false;
         IsReady = false;
 
         StatusText.text = "Connecting...";

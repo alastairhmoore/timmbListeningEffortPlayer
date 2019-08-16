@@ -7,12 +7,12 @@ using UnityEngine.UI;
 
 public class StartButton : MonoBehaviour
 {
-    private VideoSelectionUI[] uiElementsToCheck;
+    private VideoDownloader[] uiElementsToCheck;
 
     // Start is called before the first frame update
     void Start()
     {
-        uiElementsToCheck = FindObjectsOfType<VideoSelectionUI>();
+        uiElementsToCheck = FindObjectsOfType<VideoDownloader>();
         Debug.Log($"{uiElementsToCheck.Length} ui elements to check", this);
         foreach (var elem in uiElementsToCheck)
         {

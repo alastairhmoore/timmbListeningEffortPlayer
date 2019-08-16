@@ -2013,5 +2013,10 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6550732376189436622, guid: 6946d8df2225c4c048fb183e2bc01a5e,
+        type: 3}
+      propertyPath: VideoName
+      value: video0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6946d8df2225c4c048fb183e2bc01a5e, type: 3}

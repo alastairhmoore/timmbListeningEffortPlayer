@@ -37,7 +37,7 @@ public class FPSDrawer : MonoBehaviour
             var player = counter.GetComponent<VideoPlayer>();
             if (player.isPlaying)
             {
-                Text.text += $"{player.clip.name}: {counter.CurrentFPS:0.} fps\n";
+                Text.text += $"{player.name}: {counter.CurrentFPS:0.} fps\n";
             }
         }
     }

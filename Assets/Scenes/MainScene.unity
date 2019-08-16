@@ -303,11 +303,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 83c551a51d9274f61b361f58c3e7571c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  videoName: video3
-  VideoClipHD: {fileID: 32900000, guid: 6d0986ec4e4ab474e9d1329fc78faaae, type: 3}
-  VideoClip4K: {fileID: 32900000, guid: 12303b9d19ee24994b6d8412ab1eb85b, type: 3}
-  RenderTextureHD: {fileID: 8400000, guid: 955712badf3e145cd807bfa8d1d63c41, type: 2}
-  RenderTexture4K: {fileID: 8400000, guid: 8f9611e3c9fea4d7f9823748fc00c1d5, type: 2}
+  VideoName: video3
   TargetMaterial: {fileID: 2100000, guid: 9cd35808171504acdb95ed7b6e230e25, type: 2}
   TargetTextureNameInShader: _MainTex3
 --- !u!114 &87967887
@@ -463,11 +459,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 83c551a51d9274f61b361f58c3e7571c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  videoName: video0
-  VideoClipHD: {fileID: 32900000, guid: f07c8d489d1e5498997e0ecca41cb19c, type: 3}
-  VideoClip4K: {fileID: 32900000, guid: 226897d0cdbbd4f4ab7183676781703c, type: 3}
-  RenderTextureHD: {fileID: 8400000, guid: 3c70a351943484c1dadb6631d08edfed, type: 2}
-  RenderTexture4K: {fileID: 8400000, guid: 888f2134d13b148d9ab08afdecc8ba96, type: 2}
+  VideoName: video0
   TargetMaterial: {fileID: 2100000, guid: 9cd35808171504acdb95ed7b6e230e25, type: 2}
   TargetTextureNameInShader: _MainTex
 --- !u!1 &609838404
@@ -501,11 +493,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 83c551a51d9274f61b361f58c3e7571c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  videoName: video2
-  VideoClipHD: {fileID: 32900000, guid: 8bb1bcbe52dbf4e70a583e9327970af8, type: 3}
-  VideoClip4K: {fileID: 32900000, guid: 2ebcd90e7aaee41f281004660d78fd32, type: 3}
-  RenderTextureHD: {fileID: 8400000, guid: db09ae70a514141898d9ee8c0188ed40, type: 2}
-  RenderTexture4K: {fileID: 8400000, guid: c179b434606c449a69fc8215820c84b0, type: 2}
+  VideoName: video2
   TargetMaterial: {fileID: 2100000, guid: 9cd35808171504acdb95ed7b6e230e25, type: 2}
   TargetTextureNameInShader: _MainTex2
 --- !u!114 &609838406
@@ -1234,11 +1222,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 83c551a51d9274f61b361f58c3e7571c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  videoName: video1
-  VideoClipHD: {fileID: 32900000, guid: c653446b5a2c342d188c3f90bf75ed59, type: 3}
-  VideoClip4K: {fileID: 32900000, guid: 2e0b5a9ec0bb04869a470bc11ab97864, type: 3}
-  RenderTextureHD: {fileID: 8400000, guid: 649021a2e37e84864ba156051d8a99a7, type: 2}
-  RenderTexture4K: {fileID: 8400000, guid: ece43fe68ce8a415196d118055b81e46, type: 2}
+  VideoName: video1
   TargetMaterial: {fileID: 2100000, guid: 9cd35808171504acdb95ed7b6e230e25, type: 2}
   TargetTextureNameInShader: _MainTex1
 --- !u!114 &1803054667
