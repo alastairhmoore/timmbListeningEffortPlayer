@@ -13,7 +13,7 @@ public class VideoManager : MonoBehaviour
     //public RenderTexture RenderTextureHD;
     //public RenderTexture RenderTexture4K;
     public Material TargetMaterial;
-    public string TargetTextureNameInShader;
+    //public string TargetTextureNameInShader;
 
     void Awake()
     {
@@ -24,7 +24,8 @@ public class VideoManager : MonoBehaviour
         {
             RenderTexture renderTexture = new RenderTexture((int)player.width, (int)player.height, 0);
             player.targetTexture = renderTexture;
-            TargetMaterial.SetTexture(TargetTextureNameInShader, renderTexture);
+            //TargetMaterial.SetTexture(TargetTextureNameInShader, renderTexture);
+            TargetMaterial.mainTexture = renderTexture;
             player.Play();
         };
 
