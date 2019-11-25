@@ -8,30 +8,18 @@ public class MainScene : MonoBehaviour
 {
     void Awake()
     {
+        // Limit camera movement to just rotation rather than position (because we're using a mono 360 video)
         UnityEngine.XR.InputTracking.disablePositionalTracking = true;
-
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        //StartCoroutine(LoadDevice());
     }
 
-    IEnumerator LoadDevice()
-    {
-        XRSettings.LoadDeviceByName("cardboard");
-        yield return null;
-        XRSettings.enabled = true;
-    }
 
     // Update is called once per frame
     void Update()
     {
-		if (Input.GetButtonDown("Fire1"))
-		{
-			Debug.Log("Fire1 button: returning to main menu");
-			SceneManager.LoadSceneAsync("MenuVideoSelection");
-		}
 	}
 }
