@@ -9,7 +9,7 @@ public class MainScene : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        StartCoroutine(LoadDevice());
+        //StartCoroutine(LoadDevice());
     }
 
     IEnumerator LoadDevice()
