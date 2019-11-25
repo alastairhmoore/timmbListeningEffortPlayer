@@ -7,7 +7,7 @@ using UnityEngine.Experimental.Rendering;
 
 public class VideoManager : MonoBehaviour
 {
-    public string VideoName;
+    public string VideoPath;
     //public VideoClip VideoClipHD;
     //public VideoClip VideoClip4K;
     //public RenderTexture RenderTextureHD;
@@ -18,7 +18,7 @@ public class VideoManager : MonoBehaviour
     void Awake()
     {
         VideoPlayer player = GetComponent<VideoPlayer>();
-        player.url = Path.Combine(Application.persistentDataPath, $"{VideoName}.mp4");
+        player.url = VideoPath;// Path.Combine(Application.persistentDataPath, $"{VideoName}.mp4");
 
         player.prepareCompleted += (source) =>
         {
