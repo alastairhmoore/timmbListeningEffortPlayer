@@ -12,7 +12,8 @@ public class VideoManager : MonoBehaviour
     //public VideoClip VideoClip4K;
     //public RenderTexture RenderTextureHD;
     //public RenderTexture RenderTexture4K;
-    public Material TargetMaterial;
+    //public bool CreateRenderTextureAndBindToTargetMaterial;
+    public Material MaterialPrototype;
     //public string TargetTextureNameInShader;
 
     void Awake()
@@ -22,10 +23,15 @@ public class VideoManager : MonoBehaviour
 
         player.prepareCompleted += (source) =>
         {
-            RenderTexture renderTexture = new RenderTexture((int)player.width, (int)player.height, 0);
-            player.targetTexture = renderTexture;
+            //if (CreateRenderTextureAndBindToTargetMaterial)
+            //{
+                RenderTexture renderTexture = new RenderTexture((int)player.width, (int)player.height, 0);
+                player.targetTexture = renderTexture;
             //TargetMaterial.SetTexture(TargetTextureNameInShader, renderTexture);
-            TargetMaterial.mainTexture = renderTexture;
+            Material myTargetMaterial = new Material(MaterialPrototype);
+            myTargetMaterial.mainTexture = renderTexture;
+            GetComponentInChildren<MeshRenderer>().material = myTargetMaterial;
+            //}
             player.Play();
         };
 

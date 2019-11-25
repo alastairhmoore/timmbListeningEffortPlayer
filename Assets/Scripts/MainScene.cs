@@ -6,6 +6,12 @@ using UnityEngine.SceneManagement;
 
 public class MainScene : MonoBehaviour
 {
+    void Awake()
+    {
+        UnityEngine.XR.InputTracking.disablePositionalTracking = true;
+
+    }
+
     // Start is called before the first frame update
     void Start()
     {
