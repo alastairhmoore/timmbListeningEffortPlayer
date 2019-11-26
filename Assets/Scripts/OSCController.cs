@@ -1,12 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Video;
 
 public class OSCController : MonoBehaviour
 {
     private OSC osc;
-    public string videoDirectory;
+    public bool logReceivedMessages;
+    //public string videoDirectory;
 
     public VideoPlayer[] videoPlayers;
 
@@ -15,19 +14,20 @@ public class OSCController : MonoBehaviour
     {
         osc = GetComponent<OSC>();
 
-        {
-            const string Address = "/set/video_directory";
-            (System.Type, string)[] Arguments = {
-                (typeof(string), "Path to root directory containing video files")
-            };
-            osc.SetAddressHandler(Address, (OscMessage message) =>
-            {
-                if (testOSCMessage(message, Arguments))
-                {
-                    videoDirectory = (string)message.values[0];
-                }
-            });
-        }
+        //{
+        //    const string Address = "/set/video_directory";
+        //    (System.Type, string)[] Arguments = {
+        //        (typeof(string), "Path to root directory containing video files")
+        //    };
+        //    osc.SetAddressHandler(Address, (OscMessage message) =>
+        //    {
+        //        if (testOSCMessage(message, Arguments))
+        //        {
+        //            videoDirectory = (string)message.values[0];
+        //            Debug.Log($"{message.address} set video directory to {(string)message.values[0]}");
+        //        }
+        //    });
+        //}
 
         {
             (System.Type, string)[] VideoArguments =
@@ -40,12 +40,17 @@ public class OSCController : MonoBehaviour
                     "/video/2",
                     "/video/3",
                 };
-            for (int i = 0; i < Addresses.Length; i++)
+            for (int I = 0; I < Addresses.Length; I++)
             {
+                // We need to make a local copy to ensure each created anonymous function
+                // captures a copy of the current loop counter value rather than a reference to the loop 
+                // counter
+                int i = I;
                 osc.SetAddressHandler(Addresses[i], (OscMessage message) =>
                 {
                     if (testOSCMessage(message, VideoArguments))
                     {
+                        Debug.Assert(message.values.Count >= 1);
                         if (videoPlayers.Length < i)
                         {
                             Debug.LogError($"No player set for {Addresses[i]} video. Please set videoPlayers[{i}] on this component.");
@@ -53,21 +58,32 @@ public class OSCController : MonoBehaviour
                         else
                         {
                             playVideo(videoPlayers[i], (string)message.values[0]);
+                            Debug.Log($"{message.address} set video player {i} to {(string)message.values[0]}");
                         }
                     }
                 });
             }
         }
+
+        osc.SetAllMessageHandler((OscMessage message) =>
+        {
+            if (logReceivedMessages)
+            {
+                Debug.Log($"OSC Message received: {message.ToString()}");
+            }
+        });
     }
 
-    private void playVideo(VideoPlayer videoPlayer, string relativePath)
+    private void playVideo(VideoPlayer videoPlayer, string absolutePath)
     {
-
+        videoPlayer.Stop();
+        videoPlayer.url = absolutePath;
+        videoPlayer.Play();
     }
 
     private bool testOSCMessage(OscMessage message, (System.Type type, string description)[] expectedArguments)
     {
-        bool isError = message.values.Count == expectedArguments.Length;
+        bool isError = message.values.Count != expectedArguments.Length;
         if (!isError)
         {
             for (int i = 0; i < message.values.Count; i++)
@@ -88,9 +104,9 @@ public class OSCController : MonoBehaviour
             string receivedFormat = "";
             foreach (object o in message.values)
             {
-                receivedFormat += $"<{o.GetType()}>: {o.ToString()}, ";
+                receivedFormat += $"<{o.GetType()}> ({o.ToString()}), ";
             }
-            Debug.LogWarning($"Received OSC message with address ${message.address} of incorrect format.\nCorrect format: ${correctFormat}\nReceived format: ${receivedFormat}");
+            Debug.LogWarning($"Received OSC message with address {message.address} of incorrect format.\nCorrect format: {correctFormat}\nReceived format: {receivedFormat}");
             return false;
         }
         else
