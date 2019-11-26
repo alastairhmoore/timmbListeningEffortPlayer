@@ -67,11 +67,13 @@ public class OSCController : MonoBehaviour
                     {
                         Debug.LogWarning($"Invalid port number received in {Address} message: {port}");
                     }
-                    else
+                    else if (osc.outIP != ip || osc.outPort != port)
                     {
+                        osc.Close();
                         osc.outIP = ip;
                         osc.outPort = port;
-                        Debug.Log($"Client address set to {ip}:{port}");
+                        osc.Open();
+                        Debug.Log($"Client address changed to {ip}:{port}");
                     }
                 }
             });

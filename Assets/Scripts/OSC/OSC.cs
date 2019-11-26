@@ -427,26 +427,33 @@ public class UDPPacketIO
 
 
     void Awake() {
-		//print("Opening OSC listener on port " + inPort);
+        //print("Opening OSC listener on port " + inPort);
 
-		OscPacketIO = new UDPPacketIO(outIP, outPort, inPort);
-		AddressTable = new Hashtable();
-
-		messagesReceived = new ArrayList();
-
-		buffer = new byte[1000];
-
-
-		ReadThread = new Thread(Read);
-		ReaderRunning = true;
-		ReadThread.IsBackground = true;      
-		ReadThread.Start();
+        Open();
 
 #if UNITY_EDITOR
         //UnityEditor.EditorApplication.playmodeStateChanged = HandleOnPlayModeChanged;
         UnityEditor.EditorApplication.playModeStateChanged += HandleOnPlayModeChanged;  //FIX FOR UNITY POST 2017
 #endif
 
+    }
+
+    public void Open()
+    {
+        Close();
+
+        OscPacketIO = new UDPPacketIO(outIP, outPort, inPort);
+        AddressTable = new Hashtable();
+
+        messagesReceived = new ArrayList();
+
+        buffer = new byte[1000];
+
+
+        ReadThread = new Thread(Read);
+        ReaderRunning = true;
+        ReadThread.IsBackground = true;
+        ReadThread.Start();
     }
 
 	void OnDestroy() {

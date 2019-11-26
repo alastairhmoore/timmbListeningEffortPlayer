@@ -13,8 +13,10 @@ public class VideoManager : MonoBehaviour
     //public RenderTexture RenderTextureHD;
     //public RenderTexture RenderTexture4K;
     //public bool CreateRenderTextureAndBindToTargetMaterial;
-    public Material MaterialPrototype;
+    //public Material MaterialPrototype;
+    public Material TargetMaterial;
     //public string TargetTextureNameInShader;
+    private RenderTexture renderTexture;
 
     void Awake()
     {
@@ -25,19 +27,21 @@ public class VideoManager : MonoBehaviour
         {
             //if (CreateRenderTextureAndBindToTargetMaterial)
             //{
-                RenderTexture renderTexture = new RenderTexture((int)player.width, (int)player.height, 0);
+            Debug.Log("creating render texture");
+                renderTexture = new RenderTexture((int)player.width, (int)player.height, 0);
                 player.targetTexture = renderTexture;
             //TargetMaterial.SetTexture(TargetTextureNameInShader, renderTexture);
-            Material myTargetMaterial = new Material(MaterialPrototype);
-            myTargetMaterial.mainTexture = renderTexture;
-            GetComponentInChildren<MeshRenderer>().material = myTargetMaterial;
+            //Debug.Log("creating material");
+            //Material myTargetMaterial = new Material(MaterialPrototype);
+            //myTargetMaterial.mainTexture = renderTexture;
+            TargetMaterial.mainTexture = renderTexture;
+            GetComponentInChildren<MeshRenderer>().material = TargetMaterial;
             //}
             player.Play();
         };
 
+        Debug.Log("preparing player");
         player.Prepare();
-
-
 
 
         //string qualityKey = $"{VideoName}_quality";
@@ -55,6 +59,15 @@ public class VideoManager : MonoBehaviour
         //    TargetMaterial.SetTexture(TargetTextureNameInShader, RenderTexture4K);
         //}
         //player.Play();
+    }
+
+    private void OnDestroy()
+    {
+        if (renderTexture != null)
+        {
+            Debug.Log("Destroying render texture");
+            renderTexture.Release();
+        }
     }
 
     // Start is called before the first frame update

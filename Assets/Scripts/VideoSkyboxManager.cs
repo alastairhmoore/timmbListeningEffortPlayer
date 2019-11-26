@@ -10,6 +10,8 @@ public class VideoSkyboxManager : MonoBehaviour
     public string VideoPath;
     public Material TargetMaterial;
 
+    private RenderTexture renderTexture;
+
     void Awake()
     {
         VideoPlayer player = GetComponent<VideoPlayer>();
@@ -17,7 +19,8 @@ public class VideoSkyboxManager : MonoBehaviour
 
         player.prepareCompleted += (source) =>
         {
-            RenderTexture renderTexture = new RenderTexture((int)player.width, (int)player.height, 0);
+            Debug.Log("Creating render texture");
+            renderTexture = new RenderTexture((int)player.width, (int)player.height, 0);
             player.targetTexture = renderTexture;
             TargetMaterial.mainTexture = renderTexture;
             player.Play();
@@ -30,6 +33,15 @@ public class VideoSkyboxManager : MonoBehaviour
     void Start()
     {
         
+    }
+
+    private void OnDestroy()
+    {
+        if (renderTexture != null)
+        {
+            Debug.Log("Releasing render texture");
+            renderTexture.Release();
+        }
     }
 
     // Update is called once per frame
