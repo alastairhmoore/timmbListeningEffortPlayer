@@ -14,21 +14,6 @@ public class OSCController : MonoBehaviour
     {
         osc = GetComponent<OSC>();
 
-        //{
-        //    const string Address = "/set/video_directory";
-        //    (System.Type, string)[] Arguments = {
-        //        (typeof(string), "Path to root directory containing video files")
-        //    };
-        //    osc.SetAddressHandler(Address, (OscMessage message) =>
-        //    {
-        //        if (testOSCMessage(message, Arguments))
-        //        {
-        //            videoDirectory = (string)message.values[0];
-        //            Debug.Log($"{message.address} set video directory to {(string)message.values[0]}");
-        //        }
-        //    });
-        //}
-
         {
             (System.Type, string)[] VideoArguments =
             {
@@ -63,6 +48,33 @@ public class OSCController : MonoBehaviour
                     }
                 });
             }
+        }
+
+        {
+            (System.Type, string)[] SetClientAddressArguments =
+            {
+                (typeof(string), "IP of client to send OSC messages to"),
+                (typeof(int), "Port of client to send OSC messages to"),
+            };
+            const string Address = "/set_client_address";
+            osc.SetAddressHandler(Address, (OscMessage message) =>
+            {
+                if (testOSCMessage(message, SetClientAddressArguments))
+                {
+                    string ip = (string)message.values[0];
+                    int port = (int)message.values[1];
+                    if (port < 0 || port > 65535)
+                    {
+                        Debug.LogWarning($"Invalid port number received in {Address} message: {port}");
+                    }
+                    else
+                    {
+                        osc.outIP = ip;
+                        osc.outPort = port;
+                        Debug.Log($"Client address set to {ip}:{port}");
+                    }
+                }
+            });
         }
 
         osc.SetAllMessageHandler((OscMessage message) =>
