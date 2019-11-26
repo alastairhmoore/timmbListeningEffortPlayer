@@ -14,7 +14,7 @@ public class VideoDownloader : MonoBehaviour
     // for testing video
     //private VideoPlayer _player;
     private UnityWebRequest _mostRecentRequest;
-    private bool _isDownloading;
+    //private bool _isDownloading;
     private bool _isAborting;
     private VideoPlayer _player;
     private string _originalStatusText;
@@ -96,11 +96,11 @@ public class VideoDownloader : MonoBehaviour
             removeFileOnAbort = true
         };
         _mostRecentRequest.timeout = 30;
-        _isDownloading = true;
+        //_isDownloading = true;
 
         yield return _mostRecentRequest.SendWebRequest();
 
-        _isDownloading = false;
+        //_isDownloading = false;
 
         if (_mostRecentRequest.isNetworkError || _mostRecentRequest.isHttpError)
         {
