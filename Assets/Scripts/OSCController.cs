@@ -1,91 +1,50 @@
 ﻿using UnityEngine;
 using UnityEngine.Video;
+using UnityOSC;
 
 public class OSCController : MonoBehaviour
 {
-    private OSC osc;
+    private OSCReceiver osc = new OSCReceiver();
+    public int listenPort = 7100;
     public bool logReceivedMessages;
     //public string videoDirectory;
 
     public VideoPlayer[] videoPlayers;
 
+    class MessageSpecification
+    {
+        public string address;
+        public (System.Type type, string description)[] arguments;
+    }
+
+    static private readonly (System.Type, string)[] videoMessageArguments = {
+        (typeof(string), "Absolute path to video file")
+    };
+
+    private readonly MessageSpecification[] videoMessageSpecifications =
+    {
+        new MessageSpecification { address="/video/background", arguments=videoMessageArguments },
+        new MessageSpecification { address="/video/1", arguments=videoMessageArguments },
+        new MessageSpecification { address="/video/2", arguments=videoMessageArguments },
+        new MessageSpecification { address="/video/3", arguments=videoMessageArguments },
+    };
+
+    private readonly MessageSpecification setClientAddressMessageSpecification = new MessageSpecification
+    {
+        address = "/set_client_address",
+        arguments = new (System.Type, string)[] {
+                (typeof(string), "Client IP"),
+                (typeof(int), "Client port"),
+        },
+    };
+
+
+
     // Start is called before the first frame update
     void Start()
     {
-        osc = GetComponent<OSC>();
-
-        {
-            (System.Type, string)[] VideoArguments =
-            {
-                (typeof(string), "Path to video file relative to video directory")
-            };
-            string[] Addresses = {
-                    "/video/background",
-                    "/video/1",
-                    "/video/2",
-                    "/video/3",
-                };
-            for (int I = 0; I < Addresses.Length; I++)
-            {
-                // We need to make a local copy to ensure each created anonymous function
-                // captures a copy of the current loop counter value rather than a reference to the loop 
-                // counter
-                int i = I;
-                osc.SetAddressHandler(Addresses[i], (OscMessage message) =>
-                {
-                    if (testOSCMessage(message, VideoArguments))
-                    {
-                        Debug.Assert(message.values.Count >= 1);
-                        if (videoPlayers.Length < i)
-                        {
-                            Debug.LogError($"No player set for {Addresses[i]} video. Please set videoPlayers[{i}] on this component.");
-                        }
-                        else
-                        {
-                            playVideo(videoPlayers[i], (string)message.values[0]);
-                            Debug.Log($"{message.address} set video player {i} to {(string)message.values[0]}");
-                        }
-                    }
-                });
-            }
-        }
-
-        {
-            (System.Type, string)[] SetClientAddressArguments =
-            {
-                (typeof(string), "IP of client to send OSC messages to"),
-                (typeof(int), "Port of client to send OSC messages to"),
-            };
-            const string Address = "/set_client_address";
-            osc.SetAddressHandler(Address, (OscMessage message) =>
-            {
-                if (testOSCMessage(message, SetClientAddressArguments))
-                {
-                    string ip = (string)message.values[0];
-                    int port = (int)message.values[1];
-                    if (port < 0 || port > 65535)
-                    {
-                        Debug.LogWarning($"Invalid port number received in {Address} message: {port}");
-                    }
-                    else if (osc.outIP != ip || osc.outPort != port)
-                    {
-                        osc.Close();
-                        osc.outIP = ip;
-                        osc.outPort = port;
-                        osc.Open();
-                        Debug.Log($"Client address changed to {ip}:{port}");
-                    }
-                }
-            });
-        }
-
-        osc.SetAllMessageHandler((OscMessage message) =>
-        {
-            if (logReceivedMessages)
-            {
-                Debug.Log($"OSC Message received: {message.ToString()}");
-            }
-        });
+        Debug.Log($"Opening OSC server on port {listenPort}.");
+        osc.Open(listenPort);
     }
 
     private void playVideo(VideoPlayer videoPlayer, string absolutePath)
@@ -95,14 +54,21 @@ public class OSCController : MonoBehaviour
         videoPlayer.Play();
     }
 
-    private bool testOSCMessage(OscMessage message, (System.Type type, string description)[] expectedArguments)
+
+    // If address matches but not arguments then will return false and print a warning
+    private bool isMatch(OSCMessage message, MessageSpecification specification)
     {
-        bool isError = message.values.Count != expectedArguments.Length;
+        if (message.Address != specification.address)
+        {
+            return false;
+        }
+
+        bool isError = message.Data.Count != specification.arguments.Length;
         if (!isError)
         {
-            for (int i = 0; i < message.values.Count; i++)
+            for (int i = 0; i < message.Data.Count; i++)
             {
-                if (message.values[i].GetType() != expectedArguments[i].type)
+                if (message.Data[i].GetType() != specification.arguments[i].type)
                 {
                     isError = true;
                 }
@@ -111,16 +77,16 @@ public class OSCController : MonoBehaviour
         if (isError)
         {
             string correctFormat = "";
-            foreach ((System.Type type, string description) in expectedArguments)
+            foreach ((System.Type type, string description) in specification.arguments)
             {
                 correctFormat += $"<{type}> ({description}), ";
             }
             string receivedFormat = "";
-            foreach (object o in message.values)
+            foreach (object o in message.Data)
             {
                 receivedFormat += $"<{o.GetType()}> ({o.ToString()}), ";
             }
-            Debug.LogWarning($"Received OSC message with address {message.address} of incorrect format.\nCorrect format: {correctFormat}\nReceived format: {receivedFormat}");
+            Debug.LogWarning($"Received OSC message with address {message.Address} of incorrect format.\nCorrect format: {correctFormat}\nReceived format: {receivedFormat}");
             return false;
         }
         else
@@ -129,10 +95,54 @@ public class OSCController : MonoBehaviour
         }
     }
 
+    private void ProcessMessage(OSCMessage message)
+    {
+        for (int i = 0; i < videoMessageSpecifications.Length; i++)
+        {
+            if (isMatch(message, videoMessageSpecifications[i]))
+            {
+                Debug.Assert(message.Data.Count >= 1);
+                if (videoPlayers.Length < i)
+                {
+                    Debug.LogError($"No player set for {message.Address} video. Please set videoPlayers[{i}] on this component.");
+                }
+                else
+                {
+                    videoPlayers[i].Stop();
+                    videoPlayers[i].url = (string)message.Data[0];
+                    videoPlayers[i].Play();
+                    Debug.Log($"{message.Address} set video player {i} to {(string)message.Data[0]}");
+                }
+                return;
+            }
+        }
+
+        if (isMatch(message, setClientAddressMessageSpecification))
+        {
+            string ip = (string)message.Data[0];
+            int port = (int)message.Data[1];
+            if (port < 0 || port > 65535)
+            {
+                Debug.LogWarning($"Invalid port number received in {message.Address} message: {port}");
+            }
+            else
+            {
+                GetComponent<OSCSender>().ClientIP = ip;
+                GetComponent<OSCSender>().Port = port;
+            }
+            return;
+        }
+
+        Debug.Log($"OSC Message with unrecognised address received: {message.ToString()}");
+    }
+
 
     // Update is called once per frame
     void Update()
     {
-
+        while (osc.hasWaitingMessages())
+        {
+            ProcessMessage(osc.getNextMessage());
+        }
     }
 }

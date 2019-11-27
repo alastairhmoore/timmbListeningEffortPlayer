@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
-using UnityEngine.Video;
 using UnityEngine.Experimental.Rendering;
+using UnityEngine.Video;
 
 public class VideoManager : MonoBehaviour
 {
@@ -28,8 +28,8 @@ public class VideoManager : MonoBehaviour
             //if (CreateRenderTextureAndBindToTargetMaterial)
             //{
             Debug.Log("creating render texture");
-                renderTexture = new RenderTexture((int)player.width, (int)player.height, 0);
-                player.targetTexture = renderTexture;
+            renderTexture = new RenderTexture((int)player.width, (int)player.height, 0);
+            player.targetTexture = renderTexture;
             //TargetMaterial.SetTexture(TargetTextureNameInShader, renderTexture);
             //Debug.Log("creating material");
             //Material myTargetMaterial = new Material(MaterialPrototype);
@@ -73,12 +73,12 @@ public class VideoManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 }
