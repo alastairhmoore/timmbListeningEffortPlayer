@@ -53,13 +53,27 @@ namespace UnityOSC
 		private const char DEFAULT = ',';
 		
 		private string _typeTag;
-		
+
 		#endregion
-		
+
 		#region Properties
 		#endregion
-	
+
 		#region Methods
+
+		public override string ToString()
+		{
+			string s = Address + " (" + _typeTag + ") ";
+			if (Data.Count > 0)
+			{
+				s += Data[0].ToString();
+				for (int i=1;i<Data.Count; i++)
+				{
+					s += ", " + Data[i].ToString();
+				}
+			}
+			return s;
+		}
 
 		/// <summary>
 		/// Specifies if the message is an OSC bundle.

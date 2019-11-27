@@ -40,12 +40,17 @@ public class OSCController : MonoBehaviour
 
 
 
-    // Start is called before the first frame update
     void Start()
     {
         Debug.Log($"Opening OSC server on port {listenPort}.");
         osc.Open(listenPort);
     }
+
+    //void OnDisable()
+    //{
+    //    Debug.Log($"Closing OSC server.");
+    //    osc.Close();
+    //}
 
     private void playVideo(VideoPlayer videoPlayer, string absolutePath)
     {
