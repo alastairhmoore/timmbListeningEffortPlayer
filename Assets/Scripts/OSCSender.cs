@@ -26,13 +26,13 @@ public class OSCSender : MonoBehaviour
 
     private void OnEnable()
     {
-        pupilometry.DataChanged += OnPupilometryDataChanged;
+        Pupilometry.DataChanged += OnPupilometryDataChanged;
 
     }
 
     private void OnDisable()
     {
-		pupilometry.DataChanged -= OnPupilometryDataChanged;
+		Pupilometry.DataChanged -= OnPupilometryDataChanged;
     }
 
 
