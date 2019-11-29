@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.Video;
 using UnityOSC;
 
@@ -38,11 +39,25 @@ public class OSCController : MonoBehaviour
         },
     };
 
-
+	// This is used by OSCSender
+	public string GetOSCAddressForVideoPlayer(VideoPlayer player)
+	{
+		Debug.Assert(videoPlayers.Length == videoMessageSpecifications.Length);
+		for (int i=0; i < Math.Min(videoPlayers.Length, videoMessageSpecifications.Length); i++)
+		{
+			if (videoPlayers[i]==player)
+			{
+				return videoMessageSpecifications[i].address;
+			}
+		}
+		Debug.LogError($"No OSC address recorded for specified video player.");
+		return "/video/?";
+	}
 
     void Start()
     {
-        Debug.Log($"Opening OSC server on port {listenPort}.");
+		Debug.Assert(videoPlayers.Length == videoMessageSpecifications.Length);
+		Debug.Log($"Opening OSC server on port {listenPort}.");
         osc.Open(listenPort);
     }
 
@@ -115,7 +130,9 @@ public class OSCController : MonoBehaviour
                 {
                     videoPlayers[i].Stop();
                     videoPlayers[i].url = (string)message.Data[0];
-                    videoPlayers[i].Play();
+					videoPlayers[i].Prepare();
+					//videoPlayers[i].Play();
+					// videoPlayers[i] will play automatically due to VideoController
                     Debug.Log($"{message.Address} set video player {i} to {(string)message.Data[0]}");
                 }
                 return;

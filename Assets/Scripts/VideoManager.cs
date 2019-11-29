@@ -8,57 +8,38 @@ using UnityEngine.Video;
 public class VideoManager : MonoBehaviour
 {
     public string VideoPath;
-    //public VideoClip VideoClipHD;
-    //public VideoClip VideoClip4K;
-    //public RenderTexture RenderTextureHD;
-    //public RenderTexture RenderTexture4K;
-    //public bool CreateRenderTextureAndBindToTargetMaterial;
-    //public Material MaterialPrototype;
     public Material TargetMaterial;
-    //public string TargetTextureNameInShader;
     private RenderTexture renderTexture;
 
     void Awake()
     {
         VideoPlayer player = GetComponent<VideoPlayer>();
-        player.url = VideoPath;// Path.Combine(Application.persistentDataPath, $"{VideoName}.mp4");
+        player.url = VideoPath;
 
         player.prepareCompleted += (source) =>
         {
-            //if (CreateRenderTextureAndBindToTargetMaterial)
-            //{
-            Debug.Log("creating render texture");
-            renderTexture = new RenderTexture((int)player.width, (int)player.height, 0);
-            player.targetTexture = renderTexture;
-            //TargetMaterial.SetTexture(TargetTextureNameInShader, renderTexture);
-            //Debug.Log("creating material");
-            //Material myTargetMaterial = new Material(MaterialPrototype);
-            //myTargetMaterial.mainTexture = renderTexture;
-            TargetMaterial.mainTexture = renderTexture;
-            GetComponentInChildren<MeshRenderer>().material = TargetMaterial;
-            //}
+			if (player.targetTexture!=null && (player.targetTexture.width != player.width || player.targetTexture.height != player.height))
+			{
+				Debug.Log("Destroying render texture");
+				Debug.Assert(player.targetTexture == renderTexture);
+				renderTexture.Release();
+				player.targetTexture = null;
+			}
+			if (player.targetTexture == null)
+			{
+				Debug.Log("Creating render texture");
+				renderTexture = new RenderTexture((int)player.width, (int)player.height, 0);
+				player.targetTexture = renderTexture;
+
+				TargetMaterial.mainTexture = renderTexture;
+				GetComponentInChildren<MeshRenderer>().material = TargetMaterial;
+			}
             player.Play();
         };
 
-        Debug.Log("preparing player");
+        Debug.Log("Preparing player");
         player.Prepare();
 
-
-        //string qualityKey = $"{VideoName}_quality";
-        //Debug.Assert(PlayerPrefs.HasKey(qualityKey));
-        //if (PlayerPrefs.GetInt(qualityKey) == 0)
-        //{
-        //    player.clip = VideoClipHD;
-        //    player.targetTexture = RenderTextureHD;
-        //    TargetMaterial.SetTexture(TargetTextureNameInShader, RenderTextureHD);
-        //}
-        //else
-        //{
-        //    player.clip = VideoClip4K;
-        //    player.targetTexture = RenderTexture4K;
-        //    TargetMaterial.SetTexture(TargetTextureNameInShader, RenderTexture4K);
-        //}
-        //player.Play();
     }
 
     private void OnDestroy()
