@@ -37,6 +37,19 @@ public class VideoManager : MonoBehaviour
             player.Play();
         };
 
+		player.started += (source) =>
+		{
+			GetComponentInChildren<MeshRenderer>().enabled = true;
+		};
+
+		player.loopPointReached += (source) =>
+		{
+			if (!player.isLooping)
+			{
+				GetComponentInChildren<MeshRenderer>().enabled = false;
+			}
+		};
+
         Debug.Log("Preparing player");
         player.Prepare();
 
