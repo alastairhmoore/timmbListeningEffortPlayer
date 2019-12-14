@@ -7,18 +7,25 @@ using UnityEngine.Video;
 
 public class VideoManager : MonoBehaviour
 {
-    public string VideoPath;
-    public Material TargetMaterial;
-    private RenderTexture renderTexture;
+	public string VideoPath;
+	public Material TargetMaterial;
+	private RenderTexture renderTexture;
 
-    void Awake()
-    {
-        VideoPlayer player = GetComponent<VideoPlayer>();
-        player.url = VideoPath;
+	private MeshRenderer meshRenderer;
 
-        player.prepareCompleted += (source) =>
-        {
-			if (player.targetTexture!=null && (player.targetTexture.width != player.width || player.targetTexture.height != player.height))
+	void Awake()
+	{
+		meshRenderer = GetComponentInChildren<MeshRenderer>();
+
+		VideoPlayer player = GetComponent<VideoPlayer>();
+		if (VideoPath != "")
+		{
+			player.url = VideoPath;
+		}
+
+		player.prepareCompleted += (source) =>
+		{
+			if (player.targetTexture != null && (player.targetTexture.width != player.width || player.targetTexture.height != player.height))
 			{
 				Debug.Log("Destroying render texture");
 				Debug.Assert(player.targetTexture == renderTexture);
@@ -32,47 +39,56 @@ public class VideoManager : MonoBehaviour
 				player.targetTexture = renderTexture;
 
 				TargetMaterial.mainTexture = renderTexture;
-				GetComponentInChildren<MeshRenderer>().material = TargetMaterial;
+				if (meshRenderer != null)
+				{
+					GetComponentInChildren<MeshRenderer>().material = TargetMaterial;
+				}
 			}
-            player.Play();
-        };
+			player.Play();
+		};
 
 		player.started += (source) =>
 		{
-			GetComponentInChildren<MeshRenderer>().enabled = true;
+			if (meshRenderer != null)
+			{
+				meshRenderer.enabled = true;
+			}
 		};
 
 		player.loopPointReached += (source) =>
 		{
-			if (!player.isLooping)
+			if (!player.isLooping && meshRenderer != null)
 			{
-				GetComponentInChildren<MeshRenderer>().enabled = false;
+				meshRenderer.enabled = false;
 			}
 		};
 
-        Debug.Log("Preparing player");
-        player.Prepare();
+		if (player.url != "")
+		{
+			Debug.Log("Preparing player");
+			player.Prepare();
+		}
 
-    }
+	}
 
-    private void OnDestroy()
-    {
-        if (renderTexture != null)
-        {
-            Debug.Log("Destroying render texture");
-            renderTexture.Release();
-        }
-    }
+	private void OnDestroy()
+	{
+		if (renderTexture != null)
+		{
+			Debug.Log("Destroying render texture");
+			renderTexture.Release();
+		}
+	}
 
-    // Start is called before the first frame update
-    void Start()
-    {
+	// Start is called before the first frame update
+	void Start()
+	{
 
-    }
+	}
 
-    // Update is called once per frame
-    void Update()
-    {
+	// Update is called once per frame
+	void Update()
+	{
 
-    }
+	}
 }
