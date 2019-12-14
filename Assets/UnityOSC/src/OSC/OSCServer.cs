@@ -47,6 +47,15 @@ namespace UnityOSC
 			Connect();
 		}
 		#endregion
+
+		~OSCServer()
+		{
+			UnityEngine.Debug.Assert((_udpClient==null) == (_receiverThread==null));
+			if (_udpClient != null)
+			{
+				Close();
+			}
+		}
 		
 		#region Member Variables
 		private UdpClient _udpClient;
