@@ -65,16 +65,16 @@ public class OSCSender : MonoBehaviour
 
 	private void OnVideoPlayerPrepared(VideoPlayer player)
 	{
-		string oscAddress = oscController.GetOSCAddressForVideoPlayer(player);
-		Send($"{oscAddress}/prepared", new ArrayList { player.url });
+		int id = oscController.GetIDForVideoPlayer(player);
+		Send($"/video/prepared", new ArrayList { id, player.url });
 	}
 
 	private void OnVideoPlayerFrameReady(VideoPlayer player, long frameIndex)
 	{
 		if (frameIndex == 0)
 		{
-			string oscAddress = oscController.GetOSCAddressForVideoPlayer(player);
-			Send($"{oscAddress}/first_frame", new ArrayList { player.url });
+			int id = oscController.GetIDForVideoPlayer(player);
+			Send($"/video/first_frame", new ArrayList { id, player.url });
 		}
 	}
 
