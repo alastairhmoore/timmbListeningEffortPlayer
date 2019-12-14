@@ -133,8 +133,38 @@ public class OSCSender : MonoBehaviour
 		}
 	}
 
+	public void SendVideoPositions(Transform[] pivotTransforms, Transform[] quadTransforms)
+	{
+		Debug.Assert(pivotTransforms.Length == quadTransforms.Length);
+		for (int i=0; i<pivotTransforms.Length; i++)
+		{
+			if (pivotTransforms[i] != null && quadTransforms[i] != null)
+			{
+				//(typeof(float), "Azimuth (degrees)"),
+				//(typeof(float), "Inclination (degrees)"),
+				//(typeof(float), "Twist (degrees)"),
+				//(typeof(float), "Rotation around X axis(degrees)"),
+				//(typeof(float), "Rotation around Y axis (degrees)"),
+				//(typeof(float), "Width (scale)"),
+				//(typeof(float), "Height (scale)"),
 
-	private void Send(string address, ArrayList arguments)
+				Send("/video/position", new ArrayList
+				{
+					i,
+					pivotTransforms[i].localEulerAngles.x,
+					pivotTransforms[i].localEulerAngles.y,
+					pivotTransforms[i].localEulerAngles.z,
+					quadTransforms[i].localEulerAngles.x,
+					quadTransforms[i].localEulerAngles.y,
+					quadTransforms[i].localScale.x,
+					quadTransforms[i].localScale.y,
+				});
+			}
+		}
+	}
+
+
+	void Send(string address, ArrayList arguments)
 	{
 		OSCMessage m = new OSCMessage(address);
 		foreach (object argument in arguments)

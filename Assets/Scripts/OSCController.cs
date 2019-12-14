@@ -11,6 +11,10 @@ public class OSCController : MonoBehaviour
 	//public string videoDirectory;
 
 	public VideoPlayer[] videoPlayers;
+	private Transform[] videoPlayerPivotTransforms;
+	private Transform[] videoPlayerQuadTransforms;
+
+	public OSCSender oscSender;
 
 	class MessageSpecification
 	{
@@ -24,10 +28,26 @@ public class OSCController : MonoBehaviour
 
 	};
 
-	private readonly MessageSpecification videoMessageSpecification = new MessageSpecification
+	private readonly MessageSpecification videoPlayMessageSpecification = new MessageSpecification
 	{
 		address = "/video/play",
 		arguments = videoMessageArguments
+	};
+
+	private readonly MessageSpecification videoPositionMessageSpecification = new MessageSpecification
+	{
+		address = "/video/position",
+		arguments = new (System.Type, string)[]
+		{
+			(typeof(int), "Video player ID (1-3)"),
+			(typeof(float), "Azimuth (degrees)"),
+			(typeof(float), "Inclination (degrees)"),
+			(typeof(float), "Twist (degrees)"),
+			(typeof(float), "Rotation around X axis(degrees)"),
+			(typeof(float), "Rotation around Y axis (degrees)"),
+			(typeof(float), "Width (scale)"),
+			(typeof(float), "Height (scale)"),
+		}
 	};
 
 	private readonly MessageSpecification setClientAddressMessageSpecification = new MessageSpecification
@@ -52,6 +72,31 @@ public class OSCController : MonoBehaviour
 		}
 		Debug.LogError($"VideoPlayer {player} is not registered with this OSCController.");
 		return -404;
+	}
+
+	void Awake()
+	{
+		oscSender = GetComponent<OSCSender>();
+
+		videoPlayerPivotTransforms = new Transform[videoPlayers.Length];
+		videoPlayerQuadTransforms = new Transform[videoPlayers.Length];
+
+		for (int i=0; i<videoPlayers.Length; i++)
+		{
+			if (videoPlayers[i].GetComponentInChildren<MeshFilter>() == null)
+			{
+				videoPlayerPivotTransforms[i] = null;
+				videoPlayerQuadTransforms[i] = null;
+			}
+			else
+			{
+				videoPlayerPivotTransforms[i] = videoPlayers[i].GetComponent<Transform>();
+				videoPlayerQuadTransforms[i] = videoPlayers[i].GetComponentInChildren<MeshFilter>().GetComponent<Transform>();
+				Debug.Assert(videoPlayerPivotTransforms[i] != null);
+				Debug.Assert(videoPlayerQuadTransforms[i] != null);
+				Debug.Assert(videoPlayerPivotTransforms[i] != videoPlayerQuadTransforms[i]);
+			}
+		}
 	}
 
 	void Start()
@@ -117,7 +162,7 @@ public class OSCController : MonoBehaviour
 
 	private void ProcessMessage(OSCMessage message)
 	{
-		if (isMatch(message, videoMessageSpecification))
+		if (isMatch(message, videoPlayMessageSpecification))
 		{
 			Debug.Assert(message.Data.Count >= 2);
 			int i = (int)message.Data[0];
@@ -150,7 +195,25 @@ public class OSCController : MonoBehaviour
 				GetComponent<OSCSender>().ClientIP = ip;
 				GetComponent<OSCSender>().Port = port;
 			}
+			oscSender.SendVideoPositions(videoPlayerPivotTransforms, videoPlayerQuadTransforms);
 			return;
+		}
+
+		if (isMatch(message, videoPositionMessageSpecification))
+		{
+			int i = (int)message.Data[0];
+			if (i < 0 || i >= videoPlayerPivotTransforms.Length || videoPlayerPivotTransforms[i] == null || videoPlayerQuadTransforms[i] == null)
+			{
+				Debug.LogWarning($"Cannot set video position for video player {i}");
+			}
+			else
+			{
+				videoPlayerPivotTransforms[i].localEulerAngles = new Vector3((float)message.Data[1], (float)message.Data[2], (float)message.Data[3]);
+				videoPlayerQuadTransforms[i].localEulerAngles = new Vector3((float)message.Data[4], (float)message.Data[5], videoPlayerQuadTransforms[i].localEulerAngles.z);
+				videoPlayerQuadTransforms[i].localScale = new Vector3((float)message.Data[6], (float)message.Data[7], videoPlayerQuadTransforms[i].localScale.z);
+				Debug.Log($"Set position of video player {i}");
+			}
+
 		}
 
 		Debug.Log($"OSC Message with unrecognised address received: {message.ToString()}");
