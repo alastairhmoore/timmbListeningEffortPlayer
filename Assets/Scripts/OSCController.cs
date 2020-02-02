@@ -34,6 +34,16 @@ public class OSCController : MonoBehaviour
 		arguments = videoMessageArguments
 	};
 
+	private readonly MessageSpecification setIdleVideoMessageSpecification = new MessageSpecification
+	{
+		address = "/video/set_idle",
+		arguments = new (System.Type, string)[]
+		{
+			(typeof(int), "Video player ID (1-3)"),
+			(typeof(string), "Absolute path to idle video file"),
+		}
+	};
+
 	private readonly MessageSpecification videoPositionMessageSpecification = new MessageSpecification
 	{
 		address = "/video/position",
@@ -43,7 +53,7 @@ public class OSCController : MonoBehaviour
 			(typeof(float), "Azimuth (degrees)"),
 			(typeof(float), "Inclination (degrees)"),
 			(typeof(float), "Twist (degrees)"),
-			(typeof(float), "Rotation around X axis(degrees)"),
+			(typeof(float), "Rotation around X axis (degrees)"),
 			(typeof(float), "Rotation around Y axis (degrees)"),
 			(typeof(float), "Width (scale)"),
 			(typeof(float), "Height (scale)"),
@@ -174,12 +184,32 @@ public class OSCController : MonoBehaviour
 			{
 				videoPlayers[i].Stop();
 				videoPlayers[i].url = (string)message.Data[1];
+				videoPlayers[i].isLooping = false;
 				videoPlayers[i].Prepare();
 				//videoPlayers[i].Play();
 				// videoPlayers[i] will play automatically due to VideoController
 				Debug.Log($"{message.Address} set video player {i} to {(string)message.Data[1]}");
 			}
 			return;
+		}
+
+		if (isMatch(message, setIdleVideoMessageSpecification))
+		{
+			Debug.Assert(message.Data.Count >= 2);
+			int i = (int)message.Data[0];
+			if (i <= 0 || videoPlayers.Length < i)
+			{
+				Debug.LogError($"{message.Address} message received for video player ID {i}. Valid video player  IDs (that can receive an idle video message) are at least 1 and at most { videoPlayers.Length - 1}");
+			}
+			else
+			{
+				var videoManager = videoPlayers[i].GetComponent<VideoManager>();
+				videoManager.IdleVideoPath = (string)message.Data[1];
+				if (!videoPlayers[i].isPlaying)
+				{
+					videoManager.StartIdleVideo();
+				}
+			}
 		}
 
 		if (isMatch(message, setClientAddressMessageSpecification))

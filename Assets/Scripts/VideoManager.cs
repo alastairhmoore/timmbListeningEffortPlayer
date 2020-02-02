@@ -8,6 +8,7 @@ using UnityEngine.Video;
 public class VideoManager : MonoBehaviour
 {
 	public string VideoPath;
+	public string IdleVideoPath;
 	public Material TargetMaterial;
 	private RenderTexture renderTexture;
 
@@ -57,9 +58,16 @@ public class VideoManager : MonoBehaviour
 
 		player.loopPointReached += (source) =>
 		{
-			if (!player.isLooping && meshRenderer != null)
+			// if non-looping video then return to idle video if there is one.
+			// otherwise hide the mesh.
+			if (!player.isLooping)
 			{
-				meshRenderer.enabled = false;
+				player.Stop();
+				bool isIdleVideoPlaying = StartIdleVideo();
+				if (!isIdleVideoPlaying && meshRenderer != null)
+				{
+					meshRenderer.enabled = false;
+				}
 			}
 		};
 
@@ -69,6 +77,23 @@ public class VideoManager : MonoBehaviour
 			player.Prepare();
 		}
 
+	}
+
+	public bool StartIdleVideo()
+	{
+		if (string.IsNullOrEmpty(IdleVideoPath))
+		{
+			Debug.Log("Cannot start idle video as non has been set.", this);
+			return false;
+		}
+		else
+		{
+			VideoPlayer player = GetComponent<VideoPlayer>();
+			player.url = IdleVideoPath;
+			player.isLooping = true;
+			player.Prepare();
+			return true;
+		}
 	}
 
 	private void OnDestroy()
