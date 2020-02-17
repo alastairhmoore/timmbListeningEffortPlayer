@@ -65,13 +65,18 @@ public class OSCSender : MonoBehaviour
 
 	private void OnVideoPlayerPrepared(VideoPlayer player)
 	{
-		int id = oscController.GetIDForVideoPlayer(player);
-		Send($"/video/prepared", new ArrayList { id, player.url });
+		bool isIdle = player.GetComponent<VideoManager>()?.IsIdleVideoPlaying == true;
+		if (!isIdle)
+		{
+			int id = oscController.GetIDForVideoPlayer(player);
+			Send($"/video/prepared", new ArrayList { id, player.url });
+		}
 	}
 
 	private void OnVideoPlayerFrameReady(VideoPlayer player, long frameIndex)
 	{
-		if (frameIndex == 0)
+		bool isIdle = player.GetComponent<VideoManager>()?.IsIdleVideoPlaying == true;
+		if (!isIdle && frameIndex == 0)
 		{
 			int id = oscController.GetIDForVideoPlayer(player);
 			Send($"/video/first_frame", new ArrayList { id, player.url });

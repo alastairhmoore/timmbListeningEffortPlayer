@@ -10,6 +10,11 @@ public class VideoManager : MonoBehaviour
 	public string VideoPath;
 	public string IdleVideoPath;
 	public Material TargetMaterial;
+	public bool IsIdleVideoPlaying
+	{
+		get { return GetComponent<VideoPlayer>()?.url == IdleVideoPath; }
+	}
+
 	private RenderTexture renderTexture;
 
 	private MeshRenderer meshRenderer;
