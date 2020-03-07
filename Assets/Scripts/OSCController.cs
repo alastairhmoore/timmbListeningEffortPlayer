@@ -16,10 +16,15 @@ public class OSCController : MonoBehaviour
 
 	public OSCSender oscSender;
 
+	/// Container for the cameraObject that we can rotate manually
+	public GameObject cameraRigObject;
+	/// What the VR system rotates for the headset's point of view
+	public GameObject cameraObject;
+
 	class MessageSpecification
 	{
 		public string address;
-		public (System.Type type, string description)[] arguments;
+		public (System.Type type, string description)[] arguments = { };
 	}
 
 	static private readonly (System.Type, string)[] videoMessageArguments = {
@@ -69,6 +74,22 @@ public class OSCController : MonoBehaviour
 		},
 	};
 
+	private readonly MessageSpecification resetOrientationMessageSpecification = new MessageSpecification
+	{
+		address = "/reset_orientation"
+	};
+
+	private readonly MessageSpecification setOrientationMessageSpecification = new MessageSpecification
+	{
+		address = "/set_orientation",
+		arguments = new (System.Type, string)[]
+		{
+			(typeof(float), "Target Euler angle X"),
+			(typeof(float), "Target Euler angle Y"),
+			(typeof(float), "Target Euler angle Z"),
+		}
+	};
+
 	// This is used by OSCSender
 	public int GetIDForVideoPlayer(VideoPlayer player)
 	{
@@ -91,7 +112,7 @@ public class OSCController : MonoBehaviour
 		videoPlayerPivotTransforms = new Transform[videoPlayers.Length];
 		videoPlayerQuadTransforms = new Transform[videoPlayers.Length];
 
-		for (int i=0; i<videoPlayers.Length; i++)
+		for (int i = 0; i < videoPlayers.Length; i++)
 		{
 			if (videoPlayers[i].GetComponentInChildren<MeshFilter>() == null)
 			{
@@ -178,7 +199,7 @@ public class OSCController : MonoBehaviour
 			int i = (int)message.Data[0];
 			if (i < 0 || videoPlayers.Length < i)
 			{
-				Debug.LogError($"{message.Address} message received for video player ID {i}. Valid video player IDs are at least 0 and at most {videoPlayers.Length-1}");
+				Debug.LogError($"{message.Address} message received for video player ID {i}. Valid video player IDs are at least 0 and at most {videoPlayers.Length - 1}");
 			}
 			else
 			{
@@ -243,7 +264,22 @@ public class OSCController : MonoBehaviour
 				videoPlayerQuadTransforms[i].localScale = new Vector3((float)message.Data[6], (float)message.Data[7], videoPlayerQuadTransforms[i].localScale.z);
 				Debug.Log($"Set position of video player {i}");
 			}
+			return;
+		}
 
+		if (isMatch(message, resetOrientationMessageSpecification))
+		{
+			cameraRigObject.transform.rotation = Quaternion.identity;
+			return;
+		}
+
+		if (isMatch(message, setOrientationMessageSpecification))
+		{
+			Vector3 targetEulerAngles = new Vector3((float)message.Data[0], (float)message.Data[1], (float)message.Data[2]);
+			Quaternion target = Quaternion.Euler(targetEulerAngles);
+			cameraRigObject.transform.rotation = target * Quaternion.Inverse(cameraObject.transform.localRotation);
+			//cameraRigObject.transform.rotation *= Quaternion.Inverse(cameraObject.transform.localRotation);
+			return;
 		}
 
 		Debug.Log($"OSC Message with unrecognised address received: {message.ToString()}");
