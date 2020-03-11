@@ -18,7 +18,6 @@ public class Pupilometry : MonoBehaviour
         public bool isLeftPupilDiameterValid, isRightPupilDiameterValid;
     }
     [SerializeField]
-    //private Data pupilometryData;
 	public bool logChanges = false;
 	private static bool sLogChanges = false;
 
@@ -29,22 +28,8 @@ public class Pupilometry : MonoBehaviour
 	// Start is called before the first frame update
 	void Start()
 	{
-		//SRanipal_Eye_v2.WrapperRegisterEyeDataCallback(Marshal.GetFunctionPointerForDelegate((SRanipal_Eye_v2.CallbackBasic)EyeCallback));
 	}
 
-	//private void OnApplicationQuit()
-	//{
-	//	Debug.Log("OnApplicationQuit");
-	//}
-	//private void OnDisable()
-	//{
-	//	Debug.Log("OnDisable");
-	//}
-
-	//private void OnDestroy()
-	//{
-	//	Debug.Log("OnDestroy");
-	//}
 
 
 	void Update()
@@ -57,31 +42,11 @@ public class Pupilometry : MonoBehaviour
 			isCallbackAdded = true;
 
 		}
-
-		//if (isCallbackAdded != SRanipal_Eye_Framework.Instance.EnableEyeDataCallback)
-		//{
-		//	if (isCallbackAdded)
-		//	{
-		//		SRanipal_Eye_v2.WrapperUnRegisterEyeDataCallback(Marshal.GetFunctionPointerForDelegate((SRanipal_Eye_v2.CallbackBasic)EyeCallback));
-		//		isCallbackAdded = false;
-		//	}
-		//	else
-		//	{
-		//		SRanipal_Eye_v2.WrapperRegisterEyeDataCallback(Marshal.GetFunctionPointerForDelegate((SRanipal_Eye_v2.CallbackBasic)EyeCallback));
-		//		isCallbackAdded = true;
-		//	}
-		//}
-		//Debug.Assert(isCallbackAdded == SRanipal_Eye_Framework.Instance.EnableEyeDataCallback);
 	}
 
 	private void EyeCallback(ref EyeData_v2 eye_data)
 	{
-		//if (this == null)
-		//{
-		//	Debug.LogWarning("EyeCallback called on null object");
-		//	return;
-		//}
-        Data data = new Data
+       Data data = new Data
         {
             hasUser = !eye_data.no_user,
             leftPupilDiameterMm = eye_data.verbose_data.left.pupil_diameter_mm,

@@ -231,6 +231,7 @@ public class OSCController : MonoBehaviour
 					videoManager.StartIdleVideo();
 				}
 			}
+			return;
 		}
 
 		if (isMatch(message, setClientAddressMessageSpecification))
