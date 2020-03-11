@@ -39,13 +39,97 @@
 		"subpatcher_template" : "",
 		"boxes" : [ 			{
 				"box" : 				{
+					"id" : "obj-109",
+					"maxclass" : "newobj",
+					"numinlets" : 2,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 685.0, 1069.0, 41.0, 22.0 ],
+					"text" : "pak i f"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-108",
+					"maxclass" : "newobj",
+					"numinlets" : 1,
+					"numoutlets" : 0,
+					"patching_rect" : [ 685.0, 1132.0, 60.0, 22.0 ],
+					"text" : "s to_unity"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-107",
+					"maxclass" : "message",
+					"numinlets" : 2,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 685.0, 1099.0, 193.0, 22.0 ],
+					"text" : "/brightness_calibration_view $1 $2"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-103",
+					"maxclass" : "comment",
+					"numinlets" : 1,
+					"numoutlets" : 0,
+					"patching_rect" : [ 780.0, 1035.0, 150.0, 20.0 ],
+					"text" : "Brightness (0.0 - 1.0)"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"format" : 6,
+					"id" : "obj-97",
+					"maxclass" : "flonum",
+					"maximum" : 1.0,
+					"minimum" : 0.0,
+					"numdecimalplaces" : 2,
+					"numinlets" : 1,
+					"numoutlets" : 2,
+					"outlettype" : [ "", "bang" ],
+					"parameter_enable" : 0,
+					"patching_rect" : [ 721.0, 1035.0, 50.0, 22.0 ]
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-95",
+					"maxclass" : "toggle",
+					"numinlets" : 1,
+					"numoutlets" : 1,
+					"outlettype" : [ "int" ],
+					"parameter_enable" : 0,
+					"patching_rect" : [ 685.0, 1035.0, 24.0, 24.0 ]
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-64",
+					"maxclass" : "comment",
+					"numinlets" : 1,
+					"numoutlets" : 0,
+					"patching_rect" : [ 685.0, 998.0, 204.0, 20.0 ],
+					"text" : "Solid brightness for calibration"
+				}
+
+			}
+, 			{
+				"box" : 				{
 					"id" : "obj-117",
 					"linecount" : 2,
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
 					"patching_rect" : [ 1198.0, 907.5, 238.0, 34.0 ],
-					"presentation_linecount" : 2,
 					"text" : "3. This value can be saved and reused for the next time you start the Unity app"
 				}
 
@@ -81,7 +165,6 @@
 					"numinlets" : 1,
 					"numoutlets" : 0,
 					"patching_rect" : [ 1083.0, 765.0, 91.0, 34.0 ],
-					"presentation_linecount" : 2,
 					"text" : "Set current orientation"
 				}
 
@@ -106,7 +189,6 @@
 					"numinlets" : 1,
 					"numoutlets" : 0,
 					"patching_rect" : [ 1198.0, 765.0, 238.0, 62.0 ],
-					"presentation_linecount" : 6,
 					"text" : "2. Now point your head to where you want forward to be in the real world and press the button to make this point towards the target forward direction"
 				}
 
@@ -174,11 +256,11 @@
 , 			{
 				"box" : 				{
 					"id" : "obj-100",
-					"linecount" : 3,
+					"linecount" : 2,
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 1198.0, 672.0, 238.0, 48.0 ],
+					"patching_rect" : [ 1198.0, 672.0, 240.0, 34.0 ],
 					"text" : "1. Look at the centre screen then press the button to record the target forward direction"
 				}
 
@@ -338,13 +420,13 @@
 , 			{
 				"box" : 				{
 					"id" : "obj-94",
-					"linecount" : 8,
+					"linecount" : 4,
 					"maxclass" : "message",
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 180.0, 525.0, 57.0, 119.0 ],
-					"text" : "/set_orientation 348.294922 294.716125 1.146385"
+					"patching_rect" : [ 180.0, 525.0, 57.0, 64.0 ],
+					"text" : "/brightness_calibration_view 0 0.59"
 				}
 
 			}
@@ -1207,7 +1289,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 200.0, 765.0, 214.0, 22.0 ],
-					"text" : "349.997772 250.597061 4.011775"
+					"text" : "346. 90.641411 359.050842"
 				}
 
 			}
@@ -1625,6 +1707,20 @@
 				"patchline" : 				{
 					"destination" : [ "obj-115", 0 ],
 					"source" : [ "obj-106", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-108", 0 ],
+					"source" : [ "obj-107", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-107", 0 ],
+					"source" : [ "obj-109", 0 ]
 				}
 
 			}
@@ -2236,6 +2332,20 @@
 				"patchline" : 				{
 					"destination" : [ "obj-55", 0 ],
 					"source" : [ "obj-92", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-109", 0 ],
+					"source" : [ "obj-95", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-109", 1 ],
+					"source" : [ "obj-97", 0 ]
 				}
 
 			}

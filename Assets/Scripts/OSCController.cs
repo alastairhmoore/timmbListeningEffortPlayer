@@ -13,6 +13,7 @@ public class OSCController : MonoBehaviour
 	public VideoPlayer[] videoPlayers;
 	private Transform[] videoPlayerPivotTransforms;
 	private Transform[] videoPlayerQuadTransforms;
+	[SerializeField] private ColorCalibrationSphere colorCalibrationSphere;
 
 	public OSCSender oscSender;
 
@@ -90,6 +91,17 @@ public class OSCController : MonoBehaviour
 		}
 	};
 
+	private readonly MessageSpecification showSolidBrightnessMessageSpecification = new MessageSpecification
+	{
+		address = "/brightness_calibration_view",
+		arguments = new (System.Type, string)[]
+		{
+			// NB max only sends ints, not bools
+			(typeof(int), "Enable display of solid brightness for calibration (0=off, 1=on)"),
+			(typeof(float), "Brightness intensity to show"),
+		}
+	};
+
 	// This is used by OSCSender
 	public int GetIDForVideoPlayer(VideoPlayer player)
 	{
@@ -107,6 +119,8 @@ public class OSCController : MonoBehaviour
 
 	void Awake()
 	{
+		Debug.Assert(colorCalibrationSphere != null);
+
 		oscSender = GetComponent<OSCSender>();
 
 		videoPlayerPivotTransforms = new Transform[videoPlayers.Length];
@@ -211,10 +225,9 @@ public class OSCController : MonoBehaviour
 				// videoPlayers[i] will play automatically due to VideoController
 				Debug.Log($"{message.Address} set video player {i} to {(string)message.Data[1]}");
 			}
-			return;
 		}
 
-		if (isMatch(message, setIdleVideoMessageSpecification))
+		else if (isMatch(message, setIdleVideoMessageSpecification))
 		{
 			Debug.Assert(message.Data.Count >= 2);
 			int i = (int)message.Data[0];
@@ -231,10 +244,9 @@ public class OSCController : MonoBehaviour
 					videoManager.StartIdleVideo();
 				}
 			}
-			return;
 		}
 
-		if (isMatch(message, setClientAddressMessageSpecification))
+		else if (isMatch(message, setClientAddressMessageSpecification))
 		{
 			string ip = (string)message.Data[0];
 			int port = (int)message.Data[1];
@@ -248,10 +260,9 @@ public class OSCController : MonoBehaviour
 				GetComponent<OSCSender>().Port = port;
 			}
 			oscSender.SendVideoPositions(videoPlayerPivotTransforms, videoPlayerQuadTransforms);
-			return;
 		}
 
-		if (isMatch(message, videoPositionMessageSpecification))
+		else if (isMatch(message, videoPositionMessageSpecification))
 		{
 			int i = (int)message.Data[0];
 			if (i < 0 || i >= videoPlayerPivotTransforms.Length || videoPlayerPivotTransforms[i] == null || videoPlayerQuadTransforms[i] == null)
@@ -265,25 +276,38 @@ public class OSCController : MonoBehaviour
 				videoPlayerQuadTransforms[i].localScale = new Vector3((float)message.Data[6], (float)message.Data[7], videoPlayerQuadTransforms[i].localScale.z);
 				Debug.Log($"Set position of video player {i}");
 			}
-			return;
 		}
 
-		if (isMatch(message, resetOrientationMessageSpecification))
+		else if (isMatch(message, resetOrientationMessageSpecification))
 		{
 			cameraRigObject.transform.rotation = Quaternion.identity;
-			return;
 		}
 
-		if (isMatch(message, setOrientationMessageSpecification))
+		else if (isMatch(message, setOrientationMessageSpecification))
 		{
 			Vector3 targetEulerAngles = new Vector3((float)message.Data[0], (float)message.Data[1], (float)message.Data[2]);
 			Quaternion target = Quaternion.Euler(targetEulerAngles);
 			cameraRigObject.transform.rotation = target * Quaternion.Inverse(cameraObject.transform.localRotation);
 			//cameraRigObject.transform.rotation *= Quaternion.Inverse(cameraObject.transform.localRotation);
-			return;
 		}
 
-		Debug.Log($"OSC Message with unrecognised address received: {message.ToString()}");
+		else if (isMatch(message, showSolidBrightnessMessageSpecification))
+		{
+			if (colorCalibrationSphere == null)
+			{
+				Debug.LogError("Color Calibration Sphere reference was not set.");
+			}
+			else
+			{
+				colorCalibrationSphere.gameObject.SetActive((int)message.Data[0] != 0);
+				colorCalibrationSphere.SetBrightness((float)message.Data[1]);
+			}
+		}
+
+		else
+		{
+			Debug.Log($"OSC Message with unrecognised address received: {message.ToString()}");
+		}
 	}
 
 
