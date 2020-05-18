@@ -115,6 +115,12 @@ public class OSCSender : MonoBehaviour
 			data.rightPupilDiameterMm,
 			data.isLeftPupilDiameterValid? 1 : 0,
 			data.isRightPupilDiameterValid? 1 : 0,
+			data.leftPupilPosition.x,
+			data.leftPupilPosition.y,
+			data.rightPupilPosition.x,
+			data.rightPupilPosition.y,
+			data.isLeftPupilPositionValid,
+			data.isRightPupilPositionValid,
 		});
 	}
 
