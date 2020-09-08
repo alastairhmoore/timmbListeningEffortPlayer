@@ -50,6 +50,15 @@ public class OSCController : MonoBehaviour
 		}
 	};
 
+    private readonly MessageSpecification startIdleVideoMessageSpecification = new MessageSpecification
+    {
+        address = "/video/start_idle",
+        arguments = new (System.Type, string)[]
+        {
+            (typeof(int), "Video Player ID (1-3)"),
+        }
+    };
+
 	private readonly MessageSpecification videoPositionMessageSpecification = new MessageSpecification
 	{
 		address = "/video/position",
@@ -245,6 +254,21 @@ public class OSCController : MonoBehaviour
 				}
 			}
 		}
+
+        else if (isMatch(message, startIdleVideoMessageSpecification))
+        {
+            Debug.Assert(message.Data.Count >= 1);
+            int i = (int)message.Data[0];
+            if (i <= 0 || videoPlayers.Length < i)
+            {
+                Debug.LogError($"{message.Address} message received for video player ID {i}. Valid video player  IDs (that can receive an idle video message) are at least 1 and at most { videoPlayers.Length - 1}");
+            }
+            else
+            {
+                var videoManager = videoPlayers[i].GetComponent<VideoManager>();
+                videoManager.StartIdleVideo();
+            }
+        }
 
 		else if (isMatch(message, setClientAddressMessageSpecification))
 		{

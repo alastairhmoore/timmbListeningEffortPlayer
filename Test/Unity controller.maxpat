@@ -4,7 +4,7 @@
 		"appversion" : 		{
 			"major" : 8,
 			"minor" : 1,
-			"revision" : 1,
+			"revision" : 0,
 			"architecture" : "x64",
 			"modernui" : 1
 		}
@@ -39,13 +39,48 @@
 		"subpatcher_template" : "",
 		"boxes" : [ 			{
 				"box" : 				{
+					"id" : "obj-127",
+					"maxclass" : "message",
+					"numinlets" : 2,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 700.0, 344.0, 103.0, 22.0 ],
+					"text" : "/video/start_idle 3"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-126",
+					"maxclass" : "message",
+					"numinlets" : 2,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 486.0, 344.0, 103.0, 22.0 ],
+					"text" : "/video/start_idle 2"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-125",
+					"maxclass" : "message",
+					"numinlets" : 2,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 270.0, 344.0, 103.0, 22.0 ],
+					"text" : "/video/start_idle 1"
+				}
+
+			}
+, 			{
+				"box" : 				{
 					"id" : "obj-120",
 					"linecount" : 4,
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 1142.5, 795.0, 52.0, 62.0 ],
-					"presentation_linecount" : 4,
+					"patching_rect" : [ 1142.5, 795.0, 53.0, 62.0 ],
 					"text" : "right pupil position is valid"
 				}
 
@@ -58,7 +93,6 @@
 					"numinlets" : 1,
 					"numoutlets" : 0,
 					"patching_rect" : [ 1080.0, 795.0, 60.0, 48.0 ],
-					"presentation_linecount" : 5,
 					"text" : "left pupil position is valid"
 				}
 
@@ -94,8 +128,7 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 1005.0, 795.0, 63.0, 48.0 ],
-					"presentation_linecount" : 3,
+					"patching_rect" : [ 1005.0, 795.0, 64.0, 48.0 ],
 					"text" : "right pupil position y (0-1)"
 				}
 
@@ -107,8 +140,7 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 930.0, 795.0, 63.0, 48.0 ],
-					"presentation_linecount" : 3,
+					"patching_rect" : [ 930.0, 795.0, 64.0, 48.0 ],
 					"text" : "right pupil position x (0-1)"
 				}
 
@@ -146,8 +178,7 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 855.0, 795.0, 59.5, 48.0 ],
-					"presentation_linecount" : 3,
+					"patching_rect" : [ 855.0, 795.0, 63.0, 48.0 ],
 					"text" : "left pupil position y (0-1)"
 				}
 
@@ -159,8 +190,7 @@
 					"maxclass" : "comment",
 					"numinlets" : 1,
 					"numoutlets" : 0,
-					"patching_rect" : [ 780.0, 795.0, 59.0, 48.0 ],
-					"presentation_linecount" : 3,
+					"patching_rect" : [ 780.0, 795.0, 63.0, 48.0 ],
 					"text" : "left pupil position x (0-1)"
 				}
 
@@ -1193,7 +1223,7 @@
 						"appversion" : 						{
 							"major" : 8,
 							"minor" : 1,
-							"revision" : 1,
+							"revision" : 0,
 							"architecture" : "x64",
 							"modernui" : 1
 						}
@@ -1896,6 +1926,27 @@
 				"patchline" : 				{
 					"destination" : [ "obj-1", 0 ],
 					"source" : [ "obj-12", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-3", 0 ],
+					"source" : [ "obj-125", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-3", 0 ],
+					"source" : [ "obj-126", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-3", 0 ],
+					"source" : [ "obj-127", 0 ]
 				}
 
 			}

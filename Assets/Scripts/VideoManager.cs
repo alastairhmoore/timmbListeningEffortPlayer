@@ -68,11 +68,11 @@ public class VideoManager : MonoBehaviour
 			if (!player.isLooping)
 			{
 				player.Stop();
-				bool isIdleVideoPlaying = StartIdleVideo();
-				if (!isIdleVideoPlaying && meshRenderer != null)
-				{
-					meshRenderer.enabled = false;
-				}
+				//bool isIdleVideoPlaying = StartIdleVideo();
+				//if (!isIdleVideoPlaying && meshRenderer != null)
+				//{
+				//	meshRenderer.enabled = false;
+				//}
 			}
 		};
 
