@@ -15,7 +15,10 @@ public class VideoSkyboxManager : MonoBehaviour
     void Awake()
     {
         VideoPlayer player = GetComponent<VideoPlayer>();
-        player.url = VideoPath;// Path.Combine(Application.persistentDataPath, $"{VideoName}.mp4");
+        if (VideoPath != "")
+        {
+            player.url = VideoPath;// Path.Combine(Application.persistentDataPath, $"{VideoName}.mp4");
+        }
 
         player.prepareCompleted += (source) =>
         {
