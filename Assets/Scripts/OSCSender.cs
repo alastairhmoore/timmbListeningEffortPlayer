@@ -140,7 +140,14 @@ public class OSCSender : MonoBehaviour
 				UserHeadPosition.rotation.eulerAngles.y,
 				UserHeadPosition.rotation.eulerAngles.z,
 			});
-			UserHeadPosition.hasChanged = false;
+
+            float rotX = 0.0f;
+            float rotY = 0.0f;
+            float rotZ = 0.0f;
+            UserHeadPosition.rotation.ToTascarEulerZYX(ref rotZ, ref rotY, ref rotX);
+            Send("/*/out/zyxeuler", new ArrayList{rotZ, rotY, rotX});
+
+            UserHeadPosition.hasChanged = false;
 		}
 	}
 
